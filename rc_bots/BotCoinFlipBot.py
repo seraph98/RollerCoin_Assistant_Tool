@@ -4,7 +4,8 @@ __date__ = '2021/7/11 10:30'
 
 from PIL import Image
 
-from rc_bots.util import *
+from rc_bots.game_util import *
+from rc_bots.image_util import *
 
 
 class BotCoinFlipBot:
@@ -26,7 +27,6 @@ class BotCoinFlipBot:
         }
         self.coin_images = [
             ("binance", cv2.imread("rc_items/coinflip/coinflip_item_binance.png")),
-            ("binance", cv2.imread("rc_items/coinflip/coinflip_item_binance2.png")),
             ("btc", cv2.imread("rc_items/coinflip/coinflip_item_btc.png")),
             ("eth", cv2.imread("rc_items/coinflip/coinflip_item_eth.png")),
             ("litecoin", cv2.imread("rc_items/coinflip/coinflip_item_litecoin.png")),
@@ -72,8 +72,6 @@ class BotCoinFlipBot:
             screen_shot_path = screen_grab()
             screen = cv2.imread(screen_shot_path)
             img_obj = Image.open(screen_shot_path)
-            print("size -> ", img_obj.size)
-            print("coin1_pos -> ", coin1_pos)
             cropImgByRect(img_obj, wrapper_pos(coin1_pos), True)
             cropImgByRect(img_obj, wrapper_pos(coin2_pos), True)
             # first version using matchTemplates to classify the image
