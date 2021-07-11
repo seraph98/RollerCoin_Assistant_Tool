@@ -39,4 +39,4 @@ if __name__ == "__main__":
               "Played Games:  {!s}\n".format(gl.get_value('GAME_NUM'))
               )
         # remove all the images captured before
-        # shutil.rmtree('imgs')
+        shutil.rmtree('imgs')
