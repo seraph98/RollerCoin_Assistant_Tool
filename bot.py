@@ -1,7 +1,7 @@
 import datetime
 import os
 import shutil
-import rc_bots.global_var as gl
+import rc_util.global_var as gl
 
 from rc_bots.BotCoinFlipBot import BotCoinFlipBot
 

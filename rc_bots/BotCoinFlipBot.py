@@ -2,10 +2,11 @@ __author__ = 'Aaron Yang'
 __email__ = 'byang971@usc.edu'
 __date__ = '2021/7/11 10:30'
 
+import random
 from PIL import Image
-
-from rc_bots.game_util import *
-from rc_bots.image_util import *
+from rc_model.CoinRecognitionModel import CoinModel
+from rc_util.game_util import *
+from rc_util.image_util import *
 
 
 class BotCoinFlipBot:
@@ -66,50 +67,32 @@ class BotCoinFlipBot:
         while len(self.coin_pos) > 0:
             coin1_pos = self.coin_pos.pop()
             coin2_pos = self.coin_pos.pop()
-            mouse_click(coin1_pos[0] + coin1_pos[2] / 2, coin1_pos[1] + coin1_pos[3] / 2, wait=0.1)
-            mouse_click(coin2_pos[0] + coin2_pos[2] / 2, coin2_pos[1] + coin2_pos[3] / 2, wait=0.1)
+            mouse_click(coin1_pos[0] + coin1_pos[2] / 2, coin1_pos[1] + coin1_pos[3] / 2,
+                        wait=random.randint(2, 3) * 0.1)
+            mouse_click(coin2_pos[0] + coin2_pos[2] / 2, coin2_pos[1] + coin2_pos[3] / 2,
+                        wait=random.randint(3, 4) * 0.1)
             time.sleep(0.2)
             screen_shot_path = screen_grab()
-            screen = cv2.imread(screen_shot_path)
             img_obj = Image.open(screen_shot_path)
-            cropImgByRect(img_obj, wrapper_pos(coin1_pos), True)
-            cropImgByRect(img_obj, wrapper_pos(coin2_pos), True)
-            # first version using matchTemplates to classify the image
-            matches = matchTemplates(
-                self.coin_images,
-                screen,
-                N_object=2,
-                score_threshold=.7,
-                maxOverlap=.25,
-                searchBox=None).values.tolist()
+            coin1_img = cropImgByRect(img_obj, wrapper_pos(coin1_pos), True)
+            coin2_img = cropImgByRect(img_obj, wrapper_pos(coin2_pos), True)
+            coin1_label = CoinModel.getInstance().predictSingleImg(coin1_img)
+            coin2_label = CoinModel.getInstance().predictSingleImg(coin2_img)
 
-            print("matches -> ", matches)
-            coin1_name = None
-            for result in matches:
-                # result sample -> ['btc', (908, 245, 116, 118), 0.8617702722549438]
-                if coin1_name is not None and result[0] == coin1_name:
-                    # if two coin are matched, we dont need to saved their positions
-                    self.coin_items[coin1_name] = []
-                else:
-                    if coin1_name is None:
-                        coin1_name = result[0]
-                    self.coin_items[result[0]].append(result[1])
-
-            if len(matches) == 0:
-                self.coin_pos.append(coin1_pos)
-                self.coin_pos.append(coin2_pos)
-                continue
-
-            # if len(matches) == 1:
-            #     # if we only recognize one, we can add another unrecognized pos into next turn
-            #     different_pos = find_a_dissimilar(matches[0][1], coin1_pos, coin2_pos)
-            #     self.coin_pos.append(different_pos)
+            if coin1_label != coin2_label:
+                self.coin_items[coin1_label].append(coin1_pos)
+                self.coin_items[coin2_label].append(coin2_pos)
+            print("{} -> {}".format(coin1_label, coin1_pos))
+            print("{} -> {}".format(coin2_label, coin2_pos))
+            print("===========================")
+            print(self.coin_items)
+            time.sleep(0.5)
 
     def match_coins(self):
         for coin in self.coin_items.values():
             if len(coin) == 2:
                 c1 = coin[0]
-                mouse_click(c1[0] + c1[2] / 2, c1[1] + c1[3] / 2, wait=0.05)
+                mouse_click(c1[0] + c1[2] / 2, c1[1] + c1[3] / 2, wait=0.2)
                 c2 = coin[1]
-                mouse_click(c2[0] + c2[2] / 2, c2[1] + c2[3] / 2, wait=0.05)
-                time.sleep(0.75)
+                mouse_click(c2[0] + c2[2] / 2, c2[1] + c2[3] / 2, wait=0.2)
+                time.sleep(1)

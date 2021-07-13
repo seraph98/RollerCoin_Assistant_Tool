@@ -10,11 +10,10 @@ import keyboard
 import pyautogui
 from MTM import matchTemplates
 
-import rc_bots.global_var as gl
-from rc_bots.image_util import screen_grab
+import rc_util.global_var as gl
+from rc_util.image_util import screen_grab
 
-num = 3
-
+pyautogui.FAILSAFE = False
 
 def mouse_click(x, y, wait=0.05):
     pyautogui.click(x, y)
@@ -100,9 +99,5 @@ def end_game():
         click_image("rc_items/utils/collect_pc.png")
 
     while not check_image("rc_items/games/coinflip_gameimg.png"):
-        # global num
         print("end game---")
-        # if num == 0:
-        #     keyboard.press_and_release("alt+left")
-        # num -= 1
         return end_game()

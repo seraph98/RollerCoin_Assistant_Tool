@@ -7,7 +7,7 @@ import time
 
 from PIL import ImageGrab
 
-from rc_bots.string_util import genRandomStr
+from rc_util.string_util import genRandomStr
 
 
 def screen_grab():
