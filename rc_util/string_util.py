@@ -8,4 +8,4 @@ import string
 
 def genRandomStr(string_length=10):
     letters_and_num = string.hexdigits
-    return ''.join(random.choice(letters_and_num) for i in range(string_length))
+    return ''.join(random.choice(letters_and_num) for _ in range(string_length))

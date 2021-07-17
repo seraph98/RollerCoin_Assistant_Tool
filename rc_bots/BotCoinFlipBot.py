@@ -11,8 +11,9 @@ from rc_util.image_util import *
 
 class BotCoinFlipBot:
     def __init__(self):
-        self.game_img_path = "rc_items/games/coinflip_gameimg.png"
-        self.game = "CoinFlip"
+        self.head_img_path = "rc_items/games/coinflip_gameimg.png"
+        self.card_back_img_path = "rc_items/coinflip/coinflip_back.png"
+        self.name = "CoinFlip"
         self.coin_pos = []
         self.coin_items = {
             "binance": [],
@@ -40,21 +41,20 @@ class BotCoinFlipBot:
         ]
 
     def can_start(self):
-        return check_image(self.game_img_path)
+        return check_image(self.head_img_path)
 
     def play(self):
-        start_game(self.game_img_path)
-        print_log_msg(self.game)
-        # get all coin position and the amount
+        start_game(self.head_img_path)
+        print_log_msg(self.name)
         self.get_coin_fields()
         self.check_coins()
         self.match_coins()
-        end_game()
+        end_game(self.head_img_path)
 
     def get_coin_fields(self):
         screen = cv2.imread(screen_grab())
         matches = matchTemplates(
-            [("card", cv2.imread("rc_items/coinflip/coinflip_back.png"))],
+            [("card", cv2.imread(self.card_back_img_path))],
             screen,
             N_object=float("inf"),
             score_threshold=0.5,
@@ -72,20 +72,17 @@ class BotCoinFlipBot:
             mouse_click(coin2_pos[0] + coin2_pos[2] / 2, coin2_pos[1] + coin2_pos[3] / 2,
                         wait=random.randint(3, 4) * 0.1)
             time.sleep(0.2)
+
             screen_shot_path = screen_grab()
             img_obj = Image.open(screen_shot_path)
-            coin1_img = cropImgByRect(img_obj, wrapper_pos(coin1_pos), True)
-            coin2_img = cropImgByRect(img_obj, wrapper_pos(coin2_pos), True)
+            coin1_img = cropImgByRect(img_obj, wrapper_pos(coin1_pos))
+            coin2_img = cropImgByRect(img_obj, wrapper_pos(coin2_pos))
             coin1_label = CoinModel.getInstance().predictSingleImg(coin1_img)
             coin2_label = CoinModel.getInstance().predictSingleImg(coin2_img)
 
             if coin1_label != coin2_label:
                 self.coin_items[coin1_label].append(coin1_pos)
                 self.coin_items[coin2_label].append(coin2_pos)
-            print("{} -> {}".format(coin1_label, coin1_pos))
-            print("{} -> {}".format(coin2_label, coin2_pos))
-            print("===========================")
-            print(self.coin_items)
             time.sleep(0.5)
 
     def match_coins(self):
