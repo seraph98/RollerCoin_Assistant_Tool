@@ -11,7 +11,7 @@ from rc_util.image_util import *
 
 class BotCoinFlipBot:
     def __init__(self):
-        self.head_img_path = "rc_items/games/coinflip_gameimg.png"
+        self.head_img_path = "rc_items/games/coinflip_game_head_img.png"
         self.card_back_img_path = "rc_items/coinflip/coinflip_back.png"
         self.name = "CoinFlip"
         self.coin_pos = []
@@ -27,18 +27,6 @@ class BotCoinFlipBot:
             "xml": [],
             "tether": [],
         }
-        self.coin_images = [
-            ("binance", cv2.imread("rc_items/coinflip/coinflip_item_binance.png")),
-            ("btc", cv2.imread("rc_items/coinflip/coinflip_item_btc.png")),
-            ("eth", cv2.imread("rc_items/coinflip/coinflip_item_eth.png")),
-            ("litecoin", cv2.imread("rc_items/coinflip/coinflip_item_litecoin.png")),
-            ("monero", cv2.imread("rc_items/coinflip/coinflip_item_monero.png")),
-            ("eos", cv2.imread("rc_items/coinflip/coinflip_item_eos.png")),
-            ("rlt", cv2.imread("rc_items/coinflip/coinflip_item_rlt.png")),
-            ("xrp", cv2.imread("rc_items/coinflip/coinflip_item_xrp.png")),
-            ("xml", cv2.imread("rc_items/coinflip/coinflip_item_xml.png")),
-            ("tether", cv2.imread("rc_items/coinflip/coinflip_item_tether.png")),
-        ]
 
     def can_start(self):
         return check_image(self.head_img_path)
@@ -75,8 +63,8 @@ class BotCoinFlipBot:
 
             screen_shot_path = screen_grab()
             img_obj = Image.open(screen_shot_path)
-            coin1_img = cropImgByRect(img_obj, wrapper_pos(coin1_pos))
-            coin2_img = cropImgByRect(img_obj, wrapper_pos(coin2_pos))
+            coin1_img = cropImgByRect(img_obj, wrapper_pos(coin1_pos), True)
+            coin2_img = cropImgByRect(img_obj, wrapper_pos(coin2_pos), True)
             coin1_label = CoinModel.getInstance().predictSingleImg(coin1_img)
             coin2_label = CoinModel.getInstance().predictSingleImg(coin2_img)
 

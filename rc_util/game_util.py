@@ -94,13 +94,13 @@ def end_game(game_block_img_path):
 
     keyboard.press_and_release("page up")
 
-    if check_image("rc_items/utils/recaptha1.png"):
+    if check_image("rc_items/utils/recaptcha1.png"):
         print("recaptha1---")
         keyboard.press_and_release("f5")
-    if check_image("rc_items/utils/recaptha2.png"):
+    if check_image("rc_items/utils/recaptcha2.png"):
         print("recaptha2---")
         keyboard.press_and_release("f5")
-    if check_image("rc_items/utils/recaptha3.png"):
+    if check_image("rc_items/utils/recaptcha3.png"):
         print("recaptha3---")
         keyboard.press_and_release("f5")
 

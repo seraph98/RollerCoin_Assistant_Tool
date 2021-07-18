@@ -1,7 +1,7 @@
 import datetime
 import os
 import shutil
-import rc_util.global_var as gl
+import rc_util.global_var as global_var
 
 from rc_bots.BotCoinFlipBot import BotCoinFlipBot
 
@@ -24,10 +24,9 @@ def main():
 
 if __name__ == "__main__":
     # check the url TODO
-    gl._init()
-    gl.set_value('GAME_NUM', 1)
-    gl.set_value('START_TIME', datetime.datetime.now())
+    global_var.init()
     setup_screen_shots_dir()
+
     try:
         main()
     except KeyboardInterrupt:
