@@ -7,11 +7,11 @@ from rc_util.game_util import find_image, check_image
 
 
 # screen_path = "../imgs/full_snap__1626483257.png"
-screen_path = "../imgs/full_snap__1626599644.png"
+screen_path = "../imgs/full_snap__1626612538.png"
 recaptha_path = "../rc_items/utils/recaptcha1.png"
 
 head_path = "../rc_items/games/coinflip_game_head_img_big.png"
-start_path = "../rc_items/utils/start_big.png"
+start_path = "../rc_items/utils/start_game_big.png"
 
 
 # screenWidth, screenHeight = pyautogui.size()

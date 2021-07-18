@@ -44,6 +44,12 @@ class TargetScreen(object):
         self.screen_setting[RECAPTCHA_OFFSET] = settings["RECAPTCHA_OFFSET"]
         self.screen_setting[HEAR_IMG_SUFFIX] = settings["HEAR_IMG_SUFFIX"]
 
+    def get_center_coordinate(self):
+        return tuple(int(self._width / 2), int(self._height / 2))
+
+    def get_recaptcha_center_coordinate(self):
+        return tuple(int(self._width / 2), int(self._height / 2) + self.screen_setting[RECAPTCHA_OFFSET])
+
     def __getitem__(self, item):
         return self.screen_setting[item]
 
