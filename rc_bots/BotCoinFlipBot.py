@@ -5,15 +5,18 @@ __date__ = '2021/7/11 10:30'
 import random
 from PIL import Image
 from rc_model.CoinRecognitionModel import CoinModel
+from rc_model.ScreenSetting import TargetScreen, HEAR_IMG_SUFFIX
 from rc_util.game_util import *
 from rc_util.image_util import *
 
 
 class BotCoinFlipBot:
-    def __init__(self):
-        self.head_img_path = "rc_items/games/coinflip_game_head_img.png"
+    def __init__(self, screen_info: TargetScreen):
+        self.screen_helper_info = screen_info
+        self.head_img_path = self._wrapper_head_img_path("rc_items/games/coinflip_game_head_img.png")
         self.card_back_img_path = "rc_items/coinflip/coinflip_back.png"
         self.name = "CoinFlip"
+
         self.coin_pos = []
         self.coin_items = {
             "binance": [],
@@ -27,6 +30,15 @@ class BotCoinFlipBot:
             "xml": [],
             "tether": [],
         }
+
+    def _wrapper_head_img_path(self, path):
+        suffix = self.screen_helper_info[HEAR_IMG_SUFFIX]
+        result = path
+        if suffix is not None and suffix != "":
+            part1, part2 = path.split(".")
+            result = "".join([part1, suffix, ".", part2])
+        print("result -> ", result)
+        return result
 
     def can_start(self):
         return check_image(self.head_img_path)

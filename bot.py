@@ -4,6 +4,7 @@ import shutil
 import rc_util.global_var as global_var
 
 from rc_bots.BotCoinFlipBot import BotCoinFlipBot
+from rc_model.ScreenSetting import TargetScreen
 
 
 def setup_screen_shots_dir():
@@ -14,21 +15,21 @@ def setup_screen_shots_dir():
         os.mkdir('imgs')
 
 
-def main():
+def main(screen_obj):
     Bots = [BotCoinFlipBot]
     while True:
         for bot in Bots:
-            if bot().can_start():
-                bot().play()
+            if bot(screen_obj).can_start():
+                bot(screen_obj).play()
 
 
 if __name__ == "__main__":
     # check the url TODO
     global_var.init()
     setup_screen_shots_dir()
-
+    screen_setting = TargetScreen.getInstance()
     try:
-        main()
+        main(screen_setting)
     except KeyboardInterrupt:
         print("Program closed by User!")
 
