@@ -22,8 +22,10 @@ START_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/start_game.png")
 RESTART_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/restart.png")
 CHOOSE_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/choose_game.png")
 
+RADAR_IMG_PATH = "rc_items/utils/radar.png"
 GAME_OVER_IMG_PATH = wrapper_img_path("rc_items/utils/game_over.png")
 LOSE_CONNECTION_IMG_PATH = "rc_items/utils/lose_conn.png"
+GAME_SECTION_IMG_PATH = "rc_items/utils/goto_games.png"
 
 
 def mouse_click(x, y, wait=0.05):
@@ -50,8 +52,8 @@ def check_image(img):
     return True if b is not None else False
 
 
-def click_image(img):
-    time.sleep(0.05)
+def click_image(img, wait=0.05):
+    time.sleep(wait)
     x, y = find_image(img, screen_grab())
     if x is None or y is None:
         return
@@ -65,6 +67,9 @@ def start_game(game_block_img_path):
     click_image(game_block_img_path)
     flag = False
     while not flag:
+        if check_image(RADAR_IMG_PATH):
+            print("clicked geetest radar button.")
+            click_image(RADAR_IMG_PATH, wait=0.3)
         flag = check_image(START_GAME_IMG_PATH)
         time.sleep(0.2)
     sx, sy = find_image(START_GAME_IMG_PATH, screen_grab())
@@ -94,16 +99,6 @@ def end_game(game_block_img_path):
         click_image(START_GAME_IMG_PATH)
 
     keyboard.press_and_release("page up")
-
-    # if check_image("rc_items/utils/recaptcha1.png"):
-    #     print("recaptha1---")
-    #     keyboard.press_and_release("f5")
-    # if check_image("rc_items/utils/recaptcha2.png"):
-    #     print("recaptha2---")
-    #     keyboard.press_and_release("f5")
-    # if check_image("rc_items/utils/recaptcha3.png"):
-    #     print("recaptha3---")
-    #     keyboard.press_and_release("f5")
 
     if check_image(LOSE_CONNECTION_IMG_PATH):
         print("lose connection, sending refresh...")
