@@ -22,7 +22,7 @@ START_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/start_game.png")
 RESTART_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/restart.png")
 CHOOSE_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/choose_game.png")
 
-RADAR_IMG_PATH = "rc_items/utils/radar.png"
+RADAR_IMG_PATH = wrapper_img_path("rc_items/utils/radar.png")
 GAME_OVER_IMG_PATH = wrapper_img_path("rc_items/utils/game_over.png")
 LOSE_CONNECTION_IMG_PATH = "rc_items/utils/lose_conn.png"
 GAME_SECTION_IMG_PATH = "rc_items/utils/goto_games.png"
