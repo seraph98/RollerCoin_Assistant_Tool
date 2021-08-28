@@ -21,7 +21,7 @@ There are two main funcs in this tool.
 
 ### How to use [如何使用]
 0. open a web browser.
-1. go to this link [https://rollercoin.com](https://rollercoin.com), and create an account. [去https://rollercoin.com链接注册一个账号]
+1. go to this link [https://rollercoin.com](https://rollercoin.com), and create an account. [去https://rollercoin.com链接注册一个账号](https://rollercoin.com)
 2. keep the lang equals to 'English' (you can click the bottom button to change it). [使用英文选项(点击屏幕下方的按钮切换)]
 3. click the 'Game' button. [点击屏幕上方的‘Game’按钮]
 4. start the application, and enjoy it.
