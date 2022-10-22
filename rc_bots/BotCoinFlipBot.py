@@ -3,6 +3,7 @@ __email__ = 'byang971@usc.edu'
 __date__ = '2021/7/11 10:30'
 
 import random
+from time import sleep
 
 from PIL import Image
 
@@ -36,8 +37,11 @@ class BotCoinFlipBot:
         return check_image(self.head_img_path)
 
     def play(self):
-        start_game(self.head_img_path)
+        err = start_game(self.head_img_path)
+        if err:
+            return not err
         print_log_msg(self.name)
+        sleep(2)
         self.get_coin_fields()
         self.check_coins()
         self.match_coins()
@@ -46,7 +50,7 @@ class BotCoinFlipBot:
     def get_coin_fields(self):
         screen = cv2.imread(screen_grab())
         matches = matchTemplates(
-            [("card", cv2.imread(self.card_back_img_path))],
+            [("img", cv2.imread(self.card_back_img_path))],
             screen,
             N_object=float("inf"),
             score_threshold=0.5,
@@ -56,6 +60,8 @@ class BotCoinFlipBot:
         print("there are {} cards need to pairing.".format(len(self.coin_pos)))
 
     def check_coins(self):
+        print(self.coin_pos)
+        print(len(self.coin_pos))
         while len(self.coin_pos) > 0:
             coin1_pos = self.coin_pos.pop()
             coin2_pos = self.coin_pos.pop()
@@ -75,13 +81,14 @@ class BotCoinFlipBot:
             if coin1_label != coin2_label:
                 self.coin_items[coin1_label].append(coin1_pos)
                 self.coin_items[coin2_label].append(coin2_pos)
+            else:
+                print('.....')
+                print(coin1_label)
             time.sleep(0.5)
+        print(self.coin_items)
 
     def match_coins(self):
         for coin in self.coin_items.values():
-            if len(coin) == 2:
-                c1 = coin[0]
-                mouse_click(c1[0] + c1[2] / 2, c1[1] + c1[3] / 2, wait=0.2)
-                c2 = coin[1]
-                mouse_click(c2[0] + c2[2] / 2, c2[1] + c2[3] / 2, wait=0.2)
+            for c in coin:
+                mouse_click(c[0] + c[2] / 2, c[1] + c[3] / 2, wait=0.2)
                 time.sleep(1)

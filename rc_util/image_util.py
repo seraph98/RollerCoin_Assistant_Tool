@@ -12,7 +12,7 @@ from rc_util.string_util import genRandomStr
 
 def screen_grab():
     im = ImageGrab.grab()
-    img_name = os.getcwd() + "\\imgs\\full_snap__" + str(int(time.time())) + ".png"
+    img_name = os.getcwd() + "/imgs/full_snap__" + str(int(time.time())) + ".png"
     im.save(img_name, "PNG")
     return img_name
 

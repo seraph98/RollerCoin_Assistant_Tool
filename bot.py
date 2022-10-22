@@ -5,6 +5,10 @@ import shutil
 import rc_util.global_var as global_var
 from rc_bots.BotCoinFlipBot import BotCoinFlipBot
 
+from rc_bots.Bot2048 import Bot2048
+
+from rc_bots.BotCoinClick import BotCoinClick
+
 
 def setup_screen_shots_dir():
     if not os.path.exists('imgs'):
@@ -15,7 +19,10 @@ def setup_screen_shots_dir():
 
 
 def main():
-    Bots = [BotCoinFlipBot]
+    # Bots = [BotCoinFlipBot]
+    # Bots = [Bot2048]
+    # Bots = [BotCoinClick]
+    Bots = [BotCoinFlipBot, Bot2048]
     while True:
         for bot in Bots:
             if bot().can_start():

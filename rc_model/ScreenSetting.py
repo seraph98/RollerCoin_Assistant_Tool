@@ -11,18 +11,17 @@ RECAPTCHA_OFFSET = "RECAPTCHA_OFFSET"
 HEAR_IMG_SUFFIX = "HEAR_IMG_SUFFIX"
 
 SCREEN_SETTING = {
-
-    "2560*1440": {
-        "LABEL": "2560*1440",
-        "GAME_LEFT_PADDING": 20,
-        "RECAPTCHA_OFFSET": 22,
-        "HEAR_IMG_SUFFIX": ""
-    },
+    # "2560*1440": {
+        # "LABEL": "2560*1440",
+        # "GAME_LEFT_PADDING": 20,
+        # "RECAPTCHA_OFFSET": 22,
+        # "HEAR_IMG_SUFFIX": ""
+    # },
     "1920*1080": {
         "LABEL": "1920*1080",
         "GAME_LEFT_PADDING": 20,
         "RECAPTCHA_OFFSET": 27,
-        "HEAR_IMG_SUFFIX": "_big"
+        "HEAR_IMG_SUFFIX": ""
     }
 }
 
