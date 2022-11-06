@@ -6,7 +6,7 @@ from rc_util.game_util import *
 from rc_util.image_util import *
 import random
 
-
+#  !!! the page is too slow, so if you play this game, you must get time-out
 class BotEnterTheChainers:
     def __init__(self):
         self.start_img_path = "rc_items/games/enter_the_chainers.png"
@@ -38,23 +38,43 @@ class BotEnterTheChainers:
         end_game(self.game_main_path)
         print_log("enter_the_chainers --> end")
 
+    # def run_game(self):
+    #     x1 = 400
+    #     x2 = 1000
+    #     y1 = 150
+    #     y2 = 750
+    #     while True:
+    #         print('-------------')
+    #         pic = pyautogui.screenshot(region=(x1, y1, x2, y2,))
+    #         width, height = pic.size
+    #         for y in range(0, height, 5):
+    #             s = ''
+    #             for x in range(0, width, 5):
+    #                 r, g, b = pic.getpixel((x, y))
+    #                 # print(x, y, '-->', r, g, b)
+    #                 # s = s + '('+str(r)+','+str(g)+','+str(b)+")"
+    #                 if r == 82 and g == 206 and b == 247:
+    #                     print('get the enemy: ', x+x1, y+y1)
+    #                     mouse_click(x+x1, y+y1, 0.2)
+    #             print(s)
+    #         if not in_game(RED_HEART_IMG_PATH_2):
+    #             break
+    #         time.sleep(1)
     def run_game(self):
-        x1 = 331
-        x2 = 1151
-        y1 = 124
-        y2 = 825
+        x1 = 667
+        x2 = 820
+        y1 = 450
+        y2 = 710
         while True:
-            print('-------------')
-            pic = pyautogui.screenshot(region=(x1, y1, x2, y2,))
-            width, height = pic.size
-            for y in range(0, height, 5):
-                s = ''
-                for x in range(0, width, 5):
-                    r, g, b = pic.getpixel((x, y))
-                    # print(x, y, '-->', r, g, b)
-                    s = s + '('+r+','+g+','+b+")"
-                    if r == 104 and g == 109 and b == 85:
-                        print('get the enemy: ', x+x1, y+y1)
-                        mouse_click(x+x1, y+y1, 0.2)
-                print(s)
+            for x in range(x1, x2, 10):
+                yy = []
+                if abs(x - x1) < 10 or abs(x - x2) < 10:
+                    # the outside, needs to be iterate
+                    yy = range(y1, y2, 10)
+                else:
+                    yy = (y1, y1)
+                for y in yy:
+                    mouse_click(x, y, 0.2)
+            if not in_game(RED_HEART_IMG_PATH_2):
+                break
             time.sleep(1)

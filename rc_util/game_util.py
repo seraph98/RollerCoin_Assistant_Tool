@@ -30,6 +30,7 @@ GET_NEW_PC_PATH = wrapper_img_path("rc_items/utils/get_new_pc.png")
 
 RADAR_IMG_PATH = wrapper_img_path("rc_items/utils/radar.png")
 GAME_OVER_IMG_PATH = wrapper_img_path("rc_items/utils/game_over.png")
+GAME_OVER_IMG_PATH_2 = wrapper_img_path("rc_items/utils/game_over_2.png")
 LOSE_CONNECTION_IMG_PATH = "rc_items/utils/lose_conn.png"
 GAME_SECTION_IMG_PATH = "rc_items/utils/goto_games.png"
 STRICT_VALIDATION_IMG_PATH = "rc_items/utils/strict_validation.png"
@@ -72,7 +73,7 @@ def in_game(path=RED_HEART_IMG_PATH):
     return check_image(path)
 
 
-def find_image(image_path, root_image_path, search_box=None):
+def find_image(image_path, root_image_path, search_box=None, below_y=0):
     matches = matchTemplates(
         [("img", cv2.imread(image_path))],
         cv2.imread(root_image_path),
@@ -82,18 +83,20 @@ def find_image(image_path, root_image_path, search_box=None):
     if len(matches["BBox"]) == 0:
         return None, None
     else:
-        box = matches["BBox"][0]
-        return box[0], box[1]
+        for box in matches["BBox"]:
+            if below_y == 0 or box[1] < below_y:
+                return box[0], box[1]
+    return None, None
 
 
-def check_image(img):
-    b, _ = find_image(img, screen_grab())
+def check_image(img, below_y=0):
+    b, _ = find_image(img, screen_grab(), below_y=0)
     return True if b is not None else False
 
 
-def click_image(img, wait=0.05):
+def click_image(img, wait=0.05,below_y=0):
     time.sleep(wait)
-    x, y = find_image(img, screen_grab())
+    x, y = find_image(img, screen_grab(), below_y=below_y)
     if x is None or y is None:
         return
 
@@ -102,8 +105,10 @@ def click_image(img, wait=0.05):
     mouse_click(x + t_rows * (3 / 5), y + t_cols * (2 / 3))
 
 
-def start_game(game_block_img_path):
-    click_image(game_block_img_path)
+def start_game(game_block_img_path, below_y=0):
+    print('begin start.........')
+    click_image(game_block_img_path, below_y=below_y)
+    print('end start.........')
     flag = False
     t = 0
     use_version = 1
@@ -174,7 +179,7 @@ def end_game(game_block_img_path, i=0):
         print("clicked gain power button_4.")
         click_image(GAIN_POWER_IMG_PATH_4)
 
-    if check_image(GAME_OVER_IMG_PATH):
+    if check_image(GAME_OVER_IMG_PATH) or check_image(GAME_OVER_IMG_PATH_2):
         print("gameover")
         if check_image(GAME_SECTION_IMG_PATH):
             click_image(GAME_SECTION_IMG_PATH)

@@ -19,10 +19,10 @@ class BotTokenBlaster:
 
     def can_start(self):
         print("token blaster can play...")
-        return check_image(self.start_img_path)
+        return check_image(self.start_img_path, below_y=300)
 
     def play(self):
-        err = start_game(self.start_img_path)
+        err = start_game(self.start_img_path, below_y=300)
         if err:
             return not err
         print_log_msg(self.name)

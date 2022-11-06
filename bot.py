@@ -24,11 +24,10 @@ def setup_screen_shots_dir():
 
 
 def main():
-    Bots = [BotCoinFlipBot]
+    # Bots = [BotCoinFlipBot]
     # Bots = [Bot2048]
-    # Bots = [BotCoinClick]s
+    Bots = [BotTokenBlaster]
     # Bots = [BotCoinFlipBot, Bot2048, BotTokenBlaster]
-    # Bots = [BotEnterTheChainers]
     i = 0
     while True:
         if i >= 10:
@@ -49,11 +48,13 @@ def main():
             print("start....", i)
             i += 1
             if bot().can_start():
+                print(bot().get_name(), 'can start')
                 i = 0
                 try:
                     bot().play()
                 except Exception as e:
                     print(bot().get_name(), ': ', e)
+                    pyautogui.press('f5')
 
 
 if __name__ == "__main__":
