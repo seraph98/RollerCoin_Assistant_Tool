@@ -4,14 +4,15 @@ __date__ = '2021/7/11 10:32'
 
 import datetime
 import time
-
+import argparse
 import cv2
 import keyboard
 import pyautogui
-from mtm import matchTemplates
+from MTM import matchTemplates
 
 import rc_util.global_var as gl
 from rc_util.image_util import screen_grab
+from rc_mail.mail import sendMail
 from rc_util.string_util import wrapper_img_path
 
 pyautogui.FAILSAFE = False
@@ -22,37 +23,53 @@ GAIN_POWER_IMG_PATH_2 = wrapper_img_path("rc_items/utils/gain_power_2.png")
 GAIN_POWER_IMG_PATH_3 = wrapper_img_path("rc_items/utils/gain_power_3.png")
 GAIN_POWER_IMG_PATH_4 = wrapper_img_path("rc_items/utils/gain_power_4.png")
 START_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/start_game.png")
+START_GAME_IMG_PATH_2 = wrapper_img_path("rc_items/utils/start_game_2.png")
 RESTART_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/restart.png")
 CHOOSE_GAME_IMG_PATH = wrapper_img_path("rc_items/utils/choose_game.png")
+GET_NEW_PC_PATH = wrapper_img_path("rc_items/utils/get_new_pc.png")
 
 RADAR_IMG_PATH = wrapper_img_path("rc_items/utils/radar.png")
 GAME_OVER_IMG_PATH = wrapper_img_path("rc_items/utils/game_over.png")
 LOSE_CONNECTION_IMG_PATH = "rc_items/utils/lose_conn.png"
 GAME_SECTION_IMG_PATH = "rc_items/utils/goto_games.png"
+STRICT_VALIDATION_IMG_PATH = "rc_items/utils/strict_validation.png"
+
+RED_HEART_IMG_PATH = "rc_items/utils/red_heart.png"
+
+RED_HEART_IMG_PATH_2 = "rc_items/utils/red_heart_2.png"
+
+parser = argparse.ArgumentParser(description='Test for argparse')
+parser.add_argument('--validation', '-v', help='human, for strict validation')
+args = parser.parse_args()
 
 
 def mouse_move_left(x, y, length):
     pyautogui.moveTo(x, y)
-    pyautogui.dragTo(x-length, y, button='left')
+    pyautogui.dragTo(x - length, y, 0.2, button='left')
 
 
 def mouse_move_right(x, y, length):
     pyautogui.moveTo(x, y)
-    pyautogui.dragTo(x+length, y, button='left')
+    pyautogui.dragTo(x + length, y, 0.2, button='left')
 
 
 def mouse_move_up(x, y, length):
     pyautogui.moveTo(x, y)
-    pyautogui.dragTo(x, y+length, button='left')
+    pyautogui.dragTo(x, y + length, 0.2, button='left')
 
 
 def mouse_move_down(x, y, length):
     pyautogui.moveTo(x, y)
-    pyautogui.dragTo(x, y-length, button='left')
+    pyautogui.dragTo(x, y - length, 0.2, button='left')
+
 
 def mouse_click(x, y, wait=0.05):
     pyautogui.click(x, y)
     time.sleep(wait)
+
+
+def in_game(path=RED_HEART_IMG_PATH):
+    return check_image(path)
 
 
 def find_image(image_path, root_image_path, search_box=None):
@@ -89,23 +106,43 @@ def start_game(game_block_img_path):
     click_image(game_block_img_path)
     flag = False
     t = 0
+    use_version = 1
     while not flag:
         t += 1
         if check_image(RADAR_IMG_PATH):
             print("clicked geetest radar button.")
             click_image(RADAR_IMG_PATH, wait=0.3)
         flag = check_image(START_GAME_IMG_PATH)
+        if not flag:
+            flag = check_image(START_GAME_IMG_PATH_2)
+            if flag:
+                use_version = 2
         print(START_GAME_IMG_PATH)
         print(f'flag={flag}')
         time.sleep(0.2)
         print(f't = {t}')
-        if t > 6:
+        print('......', not args.validation)
+
+        if check_image(STRICT_VALIDATION_IMG_PATH) and not args.validation:
             click_image(GAME_SECTION_IMG_PATH)
+            # maybe blocked by strict validation, should send email and panic
+            sendMail("rollercoin", "need validation")
+            exit(0)
+        if t > 30:
+            sendMail("rollercoin", "retry")
+            pyautogui.press('f5')
             return "break"
-    sx, sy = find_image(START_GAME_IMG_PATH, screen_grab())
+    sx = 0
+    sy = 0
+    if use_version == 1:
+        sx, sy = find_image(START_GAME_IMG_PATH, screen_grab())
+    elif use_version == 2:
+        sx, sy = find_image(START_GAME_IMG_PATH_2, screen_grab())
     mouse_click(sx + 2, sy + 2, wait=0.05)
     print("begin to count down ...")
     time.sleep(3)
+    pyautogui.scroll(40)
+    pyautogui.scroll(-2)
 
 
 def print_log_msg(name):
@@ -115,7 +152,12 @@ def print_log_msg(name):
     gl.set_value('GAME_NUM', game_num + 1)
 
 
-def end_game(game_block_img_path):
+def print_log(msg):
+    print("'{}'@{!s}".format(msg, datetime.datetime.now().strftime('%y-%m-%d %I:%M:%S %p')))
+
+
+def end_game(game_block_img_path, i=0):
+    pyautogui.scroll(10)
     if check_image(GAIN_POWER_IMG_PATH):
         print("clicked gain power button.")
         click_image(GAIN_POWER_IMG_PATH)
@@ -134,17 +176,29 @@ def end_game(game_block_img_path):
 
     if check_image(GAME_OVER_IMG_PATH):
         print("gameover")
-        click_image(GAME_SECTION_IMG_PATH)
+        if check_image(GAME_SECTION_IMG_PATH):
+            click_image(GAME_SECTION_IMG_PATH)
+        else:
+            pyautogui.press('f5')
+        return
 
     if check_image(START_GAME_IMG_PATH):
         print("start_game")
         click_image(START_GAME_IMG_PATH)
 
+    if check_image(GET_NEW_PC_PATH):
+        print("get_new_pc")
+        click_image(GET_NEW_PC_PATH)
+
     keyboard.press_and_release("page up")
 
     if check_image(LOSE_CONNECTION_IMG_PATH):
         print("lose connection, sending refresh...")
-        keyboard.press_and_release("f5")
+        if check_image(GAME_SECTION_IMG_PATH):
+            click_image(GAME_SECTION_IMG_PATH)
+        else:
+            pyautogui.press('f5')
+        return
 
     if check_image(CHOOSE_GAME_IMG_PATH):
         print("clicked choose game button.")
@@ -155,5 +209,11 @@ def end_game(game_block_img_path):
         click_image(COLLECT_PC_IMG_PATH)
 
     while not check_image(game_block_img_path):
-        print("still waiting...")
-        return end_game(game_block_img_path)
+        print("still waiting...", i)
+        time.sleep(1)
+        if i > 20:
+            print("connection for 20 sec, go to games main")
+            click_image(GAME_SECTION_IMG_PATH)
+            pyautogui.press('f5')
+            return
+        return end_game(game_block_img_path, i + 1)

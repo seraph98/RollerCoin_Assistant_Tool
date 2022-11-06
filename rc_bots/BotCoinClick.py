@@ -9,6 +9,9 @@ class BotCoinClick:
         self.name = "CoinClick"
         self.game_status = "idle"
 
+    def get_name(self):
+        return self.name
+
     def can_start(self):
         return check_image(self.start_img_path)
 
@@ -48,7 +51,7 @@ class BotCoinClick:
                     print("clicked!!!!!!!")
                     break
                 for y in range(0, height, 5):
-                    r, g, b, _ = pic.getpixel((x, y))
+                    r, g, b = pic.getpixel((x, y))
 
                     # blue coin
                     if b == 183 and r == 0:

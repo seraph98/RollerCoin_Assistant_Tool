@@ -21,6 +21,12 @@ SCREEN_SETTING = {
         "LABEL": "1920*1080",
         "GAME_LEFT_PADDING": 20,
         "RECAPTCHA_OFFSET": 27,
+        "HEAR_IMG_SUFFIX": "_big"
+    },
+    "1440*848": {
+        "LABEL": "1440*848",
+        "GAME_LEFT_PADDING": 20,
+        "RECAPTCHA_OFFSET": 27,
         "HEAR_IMG_SUFFIX": ""
     }
 }
@@ -32,11 +38,14 @@ class TargetScreen(object):
     def __init__(self):
         self.screen_setting = {}
         width, height = pyautogui.size()
+        print("width: ", width)
+        print("height: ", height)
         self._gen_screen_setting(str(width) + "*" + str(height))
         self._height = height
         self._width = width
 
     def _gen_screen_setting(self, label):
+        print(label)
         self.label = label
         settings = SCREEN_SETTING[label]
         self.screen_setting[GAME_LEFT_PADDING] = settings["GAME_LEFT_PADDING"]

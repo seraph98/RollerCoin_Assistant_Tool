@@ -17,6 +17,8 @@ class BotCoinFlipBot:
     def __init__(self):
         self.head_img_path = wrapper_img_path("rc_items/games/coinflip_game_head_img.png")
         self.card_back_img_path = wrapper_img_path("rc_items/coinflip/coinflip_back.png")
+        self.game_main_path = wrapper_img_path("rc_items/utils/game_main.png")
+
         self.name = "CoinFlip"
 
         self.coin_pos = []
@@ -33,6 +35,9 @@ class BotCoinFlipBot:
             "tether": [],
         }
 
+    def get_name(self):
+        return self.name
+
     def can_start(self):
         return check_image(self.head_img_path)
 
@@ -45,7 +50,7 @@ class BotCoinFlipBot:
         self.get_coin_fields()
         self.check_coins()
         self.match_coins()
-        end_game(self.head_img_path)
+        end_game(self.game_main_path)
 
     def get_coin_fields(self):
         screen = cv2.imread(screen_grab())
