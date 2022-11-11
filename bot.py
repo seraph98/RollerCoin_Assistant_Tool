@@ -26,8 +26,8 @@ def setup_screen_shots_dir():
 def main():
     # Bots = [BotCoinFlipBot]
     # Bots = [Bot2048]
-    Bots = [BotTokenBlaster]
-    # Bots = [BotCoinFlipBot, Bot2048, BotTokenBlaster]
+    # Bots = [BotTokenBlaster]
+    Bots = [BotCoinFlipBot, Bot2048, BotTokenBlaster]
     i = 0
     while True:
         if i >= 10:

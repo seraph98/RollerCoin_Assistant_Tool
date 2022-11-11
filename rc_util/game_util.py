@@ -73,41 +73,42 @@ def in_game(path=RED_HEART_IMG_PATH):
     return check_image(path)
 
 
-def find_image(image_path, root_image_path, search_box=None, below_y=0):
+def find_image(image_path, root_image_path, search_box=None, score_threshold=0.9):
     matches = matchTemplates(
         [("img", cv2.imread(image_path))],
         cv2.imread(root_image_path),
         N_object=10,
-        score_threshold=0.9,
+        score_threshold=score_threshold,
         searchBox=search_box)
+    print(image_path,'------->', matches)
     if len(matches["BBox"]) == 0:
         return None, None
     else:
         for box in matches["BBox"]:
-            if below_y == 0 or box[1] < below_y:
-                return box[0], box[1]
+            return box[0], box[1]
     return None, None
 
 
-def check_image(img, below_y=0):
-    b, _ = find_image(img, screen_grab(), below_y=0)
+def check_image(img, score_threshold=0.9):
+    b, _ = find_image(img, screen_grab(), score_threshold=score_threshold)
     return True if b is not None else False
 
 
-def click_image(img, wait=0.05,below_y=0):
+def click_image(img, wait=0.05, score_threshold=0.9):
     time.sleep(wait)
-    x, y = find_image(img, screen_grab(), below_y=below_y)
+    x, y = find_image(img, screen_grab(), score_threshold=score_threshold)
     if x is None or y is None:
         return
-
     im = cv2.imread(img)
     t_cols, t_rows, _ = im.shape
-    mouse_click(x + t_rows * (3 / 5), y + t_cols * (2 / 3))
+    print(img, x, y)
+    print(img, 'real click',x + t_rows * (3 / 5), y + t_cols * (2 / 3))
+    mouse_click(x + t_rows * (3 / 5), y + t_cols * (1 / 2))
 
 
-def start_game(game_block_img_path, below_y=0):
+def start_game(game_block_img_path, score_threshold=0.9):
     print('begin start.........')
-    click_image(game_block_img_path, below_y=below_y)
+    click_image(game_block_img_path, score_threshold=score_threshold)
     print('end start.........')
     flag = False
     t = 0
@@ -127,12 +128,16 @@ def start_game(game_block_img_path, below_y=0):
         time.sleep(0.2)
         print(f't = {t}')
         print('......', not args.validation)
-
-        if check_image(STRICT_VALIDATION_IMG_PATH) and not args.validation:
-            click_image(GAME_SECTION_IMG_PATH)
-            # maybe blocked by strict validation, should send email and panic
-            sendMail("rollercoin", "need validation")
-            exit(0)
+        if check_image(STRICT_VALIDATION_IMG_PATH):
+            if not args.validation:
+                click_image(GAME_SECTION_IMG_PATH)
+                # maybe blocked by strict validation, should send email and panic
+                sendMail("rollercoin", "need validation and exist")
+                exit(0)
+            else:
+                time.sleep(300)
+                sendMail("rollercoin", "need validation and try again")
+                return ""
         if t > 30:
             sendMail("rollercoin", "retry")
             pyautogui.press('f5')
@@ -148,6 +153,7 @@ def start_game(game_block_img_path, below_y=0):
     time.sleep(3)
     pyautogui.scroll(40)
     pyautogui.scroll(-2)
+    time.sleep(2)
 
 
 def print_log_msg(name):
