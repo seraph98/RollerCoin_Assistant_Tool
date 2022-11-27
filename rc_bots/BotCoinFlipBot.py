@@ -44,7 +44,7 @@ class BotCoinFlipBot:
     def play(self):
         err = start_game(self.head_img_path)
         if err:
-            return not err
+            return err
         print_log_msg(self.name)
         sleep(2)
         self.get_coin_fields()

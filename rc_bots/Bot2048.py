@@ -23,7 +23,7 @@ class Bot2048:
     def play(self):
         err = start_game(self.start_img_path)
         if err:
-            return not err
+            return err
         print_log_msg(self.name)
         time.sleep(1)
         print_log("2048 --> run")

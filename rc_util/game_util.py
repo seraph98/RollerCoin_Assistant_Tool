@@ -31,13 +31,16 @@ GET_NEW_PC_PATH = wrapper_img_path("rc_items/utils/get_new_pc.png")
 RADAR_IMG_PATH = wrapper_img_path("rc_items/utils/radar.png")
 GAME_OVER_IMG_PATH = wrapper_img_path("rc_items/utils/game_over.png")
 GAME_OVER_IMG_PATH_2 = wrapper_img_path("rc_items/utils/game_over_2.png")
+GAME_OVER_IMG_PATH_3 = wrapper_img_path("rc_items/utils/game_over_3.png")
+
 LOSE_CONNECTION_IMG_PATH = "rc_items/utils/lose_conn.png"
 GAME_SECTION_IMG_PATH = "rc_items/utils/goto_games.png"
 STRICT_VALIDATION_IMG_PATH = "rc_items/utils/strict_validation.png"
 
 RED_HEART_IMG_PATH = "rc_items/utils/red_heart.png"
-
 RED_HEART_IMG_PATH_2 = "rc_items/utils/red_heart_2.png"
+
+SCORE_IMG_PATH = "rc_items/utils/score.png"
 
 parser = argparse.ArgumentParser(description='Test for argparse')
 parser.add_argument('--validation', '-v', help='human, for strict validation')
@@ -80,7 +83,6 @@ def find_image(image_path, root_image_path, search_box=None, score_threshold=0.9
         N_object=10,
         score_threshold=score_threshold,
         searchBox=search_box)
-    print(image_path,'------->', matches)
     if len(matches["BBox"]) == 0:
         return None, None
     else:
@@ -106,7 +108,7 @@ def click_image(img, wait=0.05, score_threshold=0.9):
     mouse_click(x + t_rows * (3 / 5), y + t_cols * (1 / 2))
 
 
-def start_game(game_block_img_path, score_threshold=0.9):
+def start_game(game_block_img_path, score_threshold=0.9, extra_sleep=2, need_sleep=True):
     print('begin start.........')
     click_image(game_block_img_path, score_threshold=score_threshold)
     print('end start.........')
@@ -135,13 +137,9 @@ def start_game(game_block_img_path, score_threshold=0.9):
                 sendMail("rollercoin", "need validation and exist")
                 exit(0)
             else:
-                time.sleep(300)
-                sendMail("rollercoin", "need validation and try again")
-                return ""
+                return "validation"
         if t > 30:
-            sendMail("rollercoin", "retry")
-            pyautogui.press('f5')
-            return "break"
+            return "retry"
     sx = 0
     sy = 0
     if use_version == 1:
@@ -150,10 +148,11 @@ def start_game(game_block_img_path, score_threshold=0.9):
         sx, sy = find_image(START_GAME_IMG_PATH_2, screen_grab())
     mouse_click(sx + 2, sy + 2, wait=0.05)
     print("begin to count down ...")
-    time.sleep(3)
+    if need_sleep:
+        time.sleep(3)
     pyautogui.scroll(40)
     pyautogui.scroll(-2)
-    time.sleep(2)
+    time.sleep(extra_sleep)
 
 
 def print_log_msg(name):
@@ -185,7 +184,7 @@ def end_game(game_block_img_path, i=0):
         print("clicked gain power button_4.")
         click_image(GAIN_POWER_IMG_PATH_4)
 
-    if check_image(GAME_OVER_IMG_PATH) or check_image(GAME_OVER_IMG_PATH_2):
+    if check_image(GAME_OVER_IMG_PATH) or check_image(GAME_OVER_IMG_PATH_2) or check_image(GAME_OVER_IMG_PATH_3):
         print("gameover")
         if check_image(GAME_SECTION_IMG_PATH):
             click_image(GAME_SECTION_IMG_PATH)

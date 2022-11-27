@@ -24,7 +24,7 @@ class BotTokenBlaster:
     def play(self):
         err = start_game(self.start_img_path, score_threshold=0.986)
         if err:
-            return not err
+            return err
         print_log_msg(self.name)
         print_log("token_blaster --> run")
         self.run_game()
